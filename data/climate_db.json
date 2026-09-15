@@ -1,0 +1,95 @@
+{
+  "climate_zones": [
+    {
+      "id": "tropical",
+      "name": "Tropical",
+      "description": "Hot and humid year-round with no frost",
+      "temp_range": { "min": 20, "max": 38, "annual_avg": 28 },
+      "humidity_range": { "min": 60, "max": 95, "annual_avg": 78 },
+      "rainfall_mm_annual": 2000,
+      "growing_season": "year-round",
+      "frost_risk": false,
+      "examples": ["Singapore", "Manaus", "Mumbai", "Bangkok", "Manila"],
+      "suitable_flowers": ["bird of paradise", "moon orchid", "red ginger", "tiger lily", "hard-leaved pocket orchid"],
+      "key_challenges": ["fungal diseases due to humidity", "pest pressure year-round", "waterlogging in monsoon season"]
+    },
+    {
+      "id": "subtropical",
+      "name": "Subtropical",
+      "description": "Hot summers, mild winters with occasional frost; high rainfall",
+      "temp_range": { "min": 5, "max": 35, "annual_avg": 20 },
+      "humidity_range": { "min": 50, "max": 80, "annual_avg": 65 },
+      "rainfall_mm_annual": 1200,
+      "growing_season": "spring to autumn",
+      "frost_risk": true,
+      "examples": ["Sydney", "Shanghai", "Atlanta", "Cape Town", "Buenos Aires"],
+      "suitable_flowers": ["bird of paradise", "tiger lily", "english marigold", "sweet william", "purple coneflower"],
+      "key_challenges": ["occasional frost damage", "summer drought stress", "subtropical pest species"]
+    },
+    {
+      "id": "temperate",
+      "name": "Temperate",
+      "description": "Distinct four seasons; moderate rainfall evenly distributed",
+      "temp_range": { "min": -10, "max": 28, "annual_avg": 12 },
+      "humidity_range": { "min": 40, "max": 80, "annual_avg": 60 },
+      "rainfall_mm_annual": 700,
+      "growing_season": "spring and summer",
+      "frost_risk": true,
+      "examples": ["London", "Paris", "Berlin", "Chicago", "Melbourne"],
+      "suitable_flowers": ["pink primrose", "sweet pea", "canterbury bells", "snapdragon", "sweet william", "monkshood", "corn poppy", "purple coneflower"],
+      "key_challenges": ["late spring frosts", "powdery mildew in dry spells", "waterlogging in wet winters"]
+    },
+    {
+      "id": "mediterranean",
+      "name": "Mediterranean",
+      "description": "Hot dry summers, mild wet winters; good light levels",
+      "temp_range": { "min": 2, "max": 36, "annual_avg": 18 },
+      "humidity_range": { "min": 30, "max": 70, "annual_avg": 50 },
+      "rainfall_mm_annual": 500,
+      "growing_season": "spring and autumn (summer dry dormancy)",
+      "frost_risk": true,
+      "examples": ["Athens", "Marseille", "Valencia", "Los Angeles", "Perth"],
+      "suitable_flowers": ["english marigold", "snapdragon", "corn poppy", "globe thistle", "sweet william"],
+      "key_challenges": ["summer drought — mulching essential", "fire risk", "poor soil common"]
+    },
+    {
+      "id": "arid",
+      "name": "Arid / Desert",
+      "description": "Very hot days, cool nights; minimal rainfall; high solar radiation",
+      "temp_range": { "min": -5, "max": 45, "annual_avg": 25 },
+      "humidity_range": { "min": 10, "max": 40, "annual_avg": 20 },
+      "rainfall_mm_annual": 200,
+      "growing_season": "winter to early spring (after rainfall)",
+      "frost_risk": true,
+      "examples": ["Phoenix", "Riyadh", "Jaipur", "Alice Springs", "Cairo"],
+      "suitable_flowers": ["globe thistle", "corn poppy (winter only)", "english marigold"],
+      "key_challenges": ["extreme water scarcity", "intense UV radiation", "wide diurnal temperature range"]
+    },
+    {
+      "id": "continental",
+      "name": "Continental",
+      "description": "Very cold winters, hot dry summers; low humidity; large temperature swings",
+      "temp_range": { "min": -30, "max": 35, "annual_avg": 8 },
+      "humidity_range": { "min": 30, "max": 70, "annual_avg": 50 },
+      "rainfall_mm_annual": 500,
+      "growing_season": "late spring and summer",
+      "frost_risk": true,
+      "examples": ["Moscow", "Minneapolis", "Budapest", "Novosibirsk", "Winnipeg"],
+      "suitable_flowers": ["monkshood", "globe thistle", "purple coneflower", "corn poppy", "tiger lily"],
+      "key_challenges": ["severe winter frost requires protection or mulching", "late spring frosts", "summer heat stress possible"]
+    },
+    {
+      "id": "alpine",
+      "name": "Alpine / Mountain",
+      "description": "Cool to cold year-round; short growing season; high UV; intense light",
+      "temp_range": { "min": -25, "max": 22, "annual_avg": 5 },
+      "humidity_range": { "min": 50, "max": 85, "annual_avg": 65 },
+      "rainfall_mm_annual": 1000,
+      "growing_season": "summer only",
+      "frost_risk": true,
+      "examples": ["Swiss Alps", "Rocky Mountains", "Himalayas"],
+      "suitable_flowers": ["hard-leaved pocket orchid", "monkshood", "globe thistle"],
+      "key_challenges": ["very short growing season", "snowmelt waterlogging in spring", "strong winds", "intense UV at altitude"]
+    }
+  ]
+}

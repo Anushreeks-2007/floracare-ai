@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#f8faf8] text-slate-800 font-sans;
+  }
+}
+
+.botanical-gradient {
+  background: linear-gradient(135deg, #1b4332 0%, #2d6a4f 60%, #40916c 100%);
+}
+
+.botanical-card {
+  @apply bg-white rounded-2xl border border-emerald-100/80 shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.glass-pill {
+  @apply bg-white/80 backdrop-blur-md border border-emerald-200/50 shadow-sm;
+}
