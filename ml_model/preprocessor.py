@@ -25,11 +25,11 @@ ALLOWED_FORMATS = {"JPEG", "JPG", "PNG", "WEBP"}
 MAX_FILE_SIZE_MB = 10
 
 # ── Transforms ─────────────────────────────────────────────────────────────────
-_val_transform = T.Compose([
-    T.Resize((IMAGE_SIZE, IMAGE_SIZE)),
-    T.ToTensor(),
-    T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
-])
+#_val_transform = T.Compose([
+ #   T.Resize((IMAGE_SIZE, IMAGE_SIZE)),
+  #  T.ToTensor(),
+   # T.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
+#])
 
 
 def validate_image_format(file_bytes: bytes, filename: str = "") -> None:
@@ -147,18 +147,34 @@ def is_plant_image(pil_image: Image.Image) -> dict:
     }
 
 
-def preprocess_image(pil_image: Image.Image) -> torch.Tensor:
-    """
-    Apply ImageNet normalisation and resize to 224×224.
+#def preprocess_image(pil_image: Image.Image) -> torch.Tensor:
+ #   """
+  #  Apply ImageNet normalisation and resize to 224×224.
+#
+ #   Args:
+  #      pil_image: RGB PIL Image of any size.
+#
+#    Returns:
+ #       torch.Tensor: shape (1, 3, 224, 224), float32, ImageNet-normalised.
+  #  """
+   # tensor = _val_transform(pil_image)   # (3, 224, 224)
+    #return tensor.unsqueeze(0)           # (1, 3, 224, 224)
+def preprocess_image(pil_image: Image.Image):
+    image = pil_image.resize((IMAGE_SIZE, IMAGE_SIZE))
 
-    Args:
-        pil_image: RGB PIL Image of any size.
+    arr = np.array(image, dtype=np.float32) / 255.0
 
-    Returns:
-        torch.Tensor: shape (1, 3, 224, 224), float32, ImageNet-normalised.
-    """
-    tensor = _val_transform(pil_image)   # (3, 224, 224)
-    return tensor.unsqueeze(0)           # (1, 3, 224, 224)
+    # HWC → CHW
+    arr = np.transpose(arr, (2, 0, 1))
+
+    # ImageNet normalization
+    mean = np.array(IMAGENET_MEAN, dtype=np.float32).reshape(3, 1, 1)
+    std = np.array(IMAGENET_STD, dtype=np.float32).reshape(3, 1, 1)
+
+    arr = (arr - mean) / std
+
+    # Add batch dimension: (3,224,224) → (1,3,224,224)
+    return np.expand_dims(arr, axis=0).astype(np.float32)
 
 
 def get_image_visual_features(pil_image: Image.Image) -> dict:
