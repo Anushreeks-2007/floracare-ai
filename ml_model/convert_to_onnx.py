@@ -8,7 +8,8 @@ from ml_model.config import MODEL_PATH, NUM_CLASSES, DROPOUT_RATE
 
 # Build the same MobileNetV2 architecture used during training
 model = models.mobilenet_v2(
-    weights=models.MobileNet_V2_Weights.IMAGENET1K_V1
+    weights=None
+    #models.MobileNet_V2_Weights.IMAGENET1K_V1
 )
 
 in_features = model.classifier[1].in_features
