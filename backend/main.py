@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
-from backend.routes.predict import router as predict_router
+#from backend.routes.predict import router as predict_router
 from backend.routes.care import router as care_router
 from backend.routes.flowers import router as flowers_router
 from backend.routes.analytics import router as analytics_router
@@ -40,7 +40,7 @@ os.makedirs(uploads_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
 # Include Routers
-app.include_router(predict_router)
+#app.include_router(predict_router)
 app.include_router(care_router)
 app.include_router(flowers_router)
 app.include_router(analytics_router)
