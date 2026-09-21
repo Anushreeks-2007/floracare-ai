@@ -6,9 +6,9 @@ from __future__ import annotations
 import logging
 import os
 
-import torch
-import torch.nn as nn
-import torchvision.models as models
+#import torch
+#import torch.nn as nn
+#import torchvision.models as models
 
 from ml_model.config import MODEL_PATH, NUM_CLASSES, DROPOUT_RATE
 
