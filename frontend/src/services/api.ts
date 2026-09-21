@@ -10,7 +10,7 @@ import {
   PlantProfile
 } from '../types';
 
-const API_BASE = '/api';
+const API_BASE = 'https://floracare-ai-ojuq.onrender.com/';
 
 export const api = {
   // Model Status & Evaluation
