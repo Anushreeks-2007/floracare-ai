@@ -94,11 +94,11 @@ def load_datasets(data_root: str) -> tuple[DataLoader, DataLoader]:
 
     train_loader = DataLoader(
         train_ds, batch_size=BATCH_SIZE, shuffle=True,
-        num_workers=4, pin_memory=True
+        num_workers=0, pin_memory=False
     )
     val_loader = DataLoader(
         val_ds, batch_size=BATCH_SIZE, shuffle=False,
-        num_workers=4, pin_memory=True
+        num_workers=0, pin_memory=False
     )
     return train_loader, val_loader
 

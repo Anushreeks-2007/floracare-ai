@@ -10,8 +10,8 @@ from typing import TYPE_CHECKING
 
 import numpy as np
 from PIL import Image, UnidentifiedImageError
-import torch
-import torchvision.transforms as T
+#import torch
+#import torchvision.transforms as T
 
 from ml_model.config import IMAGE_SIZE, IMAGENET_MEAN, IMAGENET_STD
 
@@ -68,27 +68,15 @@ def load_image_from_bytes(file_bytes: bytes) -> Image.Image:
     except Exception as exc:
         raise ValueError(f"Could not open image: {exc}") from exc
 
-
 def is_plant_image(pil_image: Image.Image) -> dict:
     """
-    Heuristic check: does this image likely contain a plant or flower?
+    Lightweight validation for plant/flower images.
 
-    Strategy:
-    - Convert to HSV colour space (using numpy approximation)
-    - Check fraction of pixels that are green (plant foliage)
-    - Check fraction of pixels that are vivid / saturated (flower petals)
-    - Minimum resolution check (very small images are likely icons)
-
-    Returns:
-        dict: {
-            "is_plant": bool,
-            "confidence": float,   # 0.0–1.0
-            "green_fraction": float,
-            "vivid_fraction": float,
-            "reason": str
-        }
+    This intentionally avoids rejecting pale or white flowers.
+    The trained flower classifier performs the actual identification.
     """
     w, h = pil_image.size
+
     if w < 64 or h < 64:
         return {
             "is_plant": False,
@@ -98,48 +86,69 @@ def is_plant_image(pil_image: Image.Image) -> dict:
             "reason": "Image resolution is too low (less than 64×64 pixels).",
         }
 
-    # Resize to 128×128 for fast analysis
     small = pil_image.resize((128, 128))
-    arr = np.array(small, dtype=np.float32) / 255.0  # shape (128,128,3) RGB
+    arr = np.array(small, dtype=np.float32) / 255.0
 
-    r, g, b = arr[:, :, 0], arr[:, :, 1], arr[:, :, 2]
+    r = arr[:, :, 0]
+    g = arr[:, :, 1]
+    b = arr[:, :, 2]
 
-    # ── Green detection (foliage) ──────────────────────────────────────────────
-    # A pixel is "green" if G is dominant, not too dark, not too grey
+    # Green foliage
     green_mask = (
-        (g > r * 1.05) &     # green channel dominant
-        (g > b * 1.05) &     # green brighter than blue
-        (g > 0.15)           # not too dark
+        (g > r * 1.05) &
+        (g > b * 1.05) &
+        (g > 0.15)
     )
     green_fraction = float(green_mask.mean())
 
-    # ── Vivid / saturated colour detection (flower petals) ───────────────────
-    # Compute a rough saturation estimate: (max - min) / max
+    # Saturated flower colours
     max_c = np.maximum(r, np.maximum(g, b))
     min_c = np.minimum(r, np.minimum(g, b))
-    sat = np.where(max_c > 0.05, (max_c - min_c) / (max_c + 1e-6), 0.0)
+    sat = np.where(
+        max_c > 0.05,
+        (max_c - min_c) / (max_c + 1e-6),
+        0.0,
+    )
 
-    # Vivid = high saturation AND not too dark AND not nearly white
-    vivid_mask = (sat > 0.35) & (max_c > 0.20) & (max_c < 0.97)
+    vivid_mask = (
+        (sat > 0.25) &
+        (max_c > 0.20)
+    )
     vivid_fraction = float(vivid_mask.mean())
 
-    # ── Decision ──────────────────────────────────────────────────────────────
-    # Score = weighted combination; either green (foliage) or vivid (petals)
-    score = min(1.0, green_fraction * 2.5 + vivid_fraction * 1.8)
-    is_plant = score >= 0.30
+    # Bright/light petals — important for white and pale flowers
+    bright_mask = (
+        (r > 0.75) &
+        (g > 0.75) &
+        (b > 0.75)
+    )
+    bright_fraction = float(bright_mask.mean())
 
-    if green_fraction > 0.08:
-        reason = f"Detected significant green (plant) content ({green_fraction:.0%} of pixels)."
-    elif vivid_fraction > 0.12:
-        reason = f"Detected vivid coloured regions ({vivid_fraction:.0%} of pixels) typical of flower petals."
+    # Be permissive here. The ML classifier performs identification.
+    score = min(
+        1.0,
+        green_fraction * 2.5
+        + vivid_fraction * 1.8
+        + bright_fraction * 0.5
+    )
+
+    is_plant = (
+        green_fraction >= 0.03
+        or vivid_fraction >= 0.05
+        or bright_fraction >= 0.20
+    )
+
+    if green_fraction >= 0.03:
+        reason = f"Detected green plant content ({green_fraction:.0%})."
+    elif vivid_fraction >= 0.05:
+        reason = f"Detected coloured flower regions ({vivid_fraction:.0%})."
+    elif bright_fraction >= 0.20:
+        reason = f"Detected bright/pale flower regions ({bright_fraction:.0%})."
     else:
-        reason = (
-            f"The image has limited green ({green_fraction:.0%}) and low colour saturation "
-            f"({vivid_fraction:.0%}). It may not be a flower or plant image."
-        )
+        reason = "Image passed basic resolution checks."
 
     return {
-        "is_plant": is_plant,
+        "is_plant": bool(is_plant),
         "confidence": round(score, 3),
         "green_fraction": round(green_fraction, 3),
         "vivid_fraction": round(vivid_fraction, 3),
@@ -147,27 +156,21 @@ def is_plant_image(pil_image: Image.Image) -> dict:
     }
 
 
-#def preprocess_image(pil_image: Image.Image) -> torch.Tensor:
- #   """
-  #  Apply ImageNet normalisation and resize to 224×224.
-#
- #   Args:
-  #      pil_image: RGB PIL Image of any size.
-#
-#    Returns:
- #       torch.Tensor: shape (1, 3, 224, 224), float32, ImageNet-normalised.
-  #  """
-   # tensor = _val_transform(pil_image)   # (3, 224, 224)
-    #return tensor.unsqueeze(0)           # (1, 3, 224, 224)
 def preprocess_image(pil_image: Image.Image):
-    image = pil_image.resize((IMAGE_SIZE, IMAGE_SIZE))
+    """
+    Prepare an image for ONNX Runtime.
+
+    Returns:
+        numpy.ndarray with shape (1, 3, 224, 224), float32.
+    """
+    image = pil_image.convert("RGB")
+    image = image.resize((IMAGE_SIZE, IMAGE_SIZE))
 
     arr = np.array(image, dtype=np.float32) / 255.0
 
-    # HWC → CHW
+    # HWC -> CHW
     arr = np.transpose(arr, (2, 0, 1))
 
-    # ImageNet normalization
     mean = np.array(IMAGENET_MEAN, dtype=np.float32).reshape(3, 1, 1)
     std = np.array(IMAGENET_STD, dtype=np.float32).reshape(3, 1, 1)
 

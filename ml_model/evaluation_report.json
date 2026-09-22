@@ -1,0 +1,109 @@
+{
+  "available": true,
+  "evaluated_at": "2026-09-21T10:20:57.226464",
+  "model_architecture": "MobileNetV2 (Oxford 102 Flowers)",
+  "dataset": "Oxford 102 Flowers (Validation Set)",
+  "total_test_samples": 1020,
+  "num_classes": 102,
+  "top1_accuracy": 0.8461,
+  "top5_accuracy": 0.9598,
+  "weighted_precision": 0.864,
+  "weighted_recall": 0.8461,
+  "weighted_f1_score": 0.8452,
+  "macro_precision": 0.864,
+  "macro_recall": 0.8461,
+  "macro_f1_score": 0.8452,
+  "top_performing_classes": [
+    {
+      "class_id": 1,
+      "label": "pink primrose",
+      "f1_score": 0.909,
+      "support": 10.0
+    },
+    {
+      "class_id": 2,
+      "label": "hard-leaved pocket orchid",
+      "f1_score": 0.947,
+      "support": 10.0
+    },
+    {
+      "class_id": 5,
+      "label": "english marigold",
+      "f1_score": 0.824,
+      "support": 10.0
+    },
+    {
+      "class_id": 6,
+      "label": "tiger lily",
+      "f1_score": 1.0,
+      "support": 10.0
+    },
+    {
+      "class_id": 7,
+      "label": "moon orchid",
+      "f1_score": 0.842,
+      "support": 10.0
+    },
+    {
+      "class_id": 8,
+      "label": "bird of paradise",
+      "f1_score": 0.952,
+      "support": 10.0
+    },
+    {
+      "class_id": 10,
+      "label": "globe thistle",
+      "f1_score": 0.947,
+      "support": 10.0
+    },
+    {
+      "class_id": 11,
+      "label": "snapdragon",
+      "f1_score": 0.706,
+      "support": 10.0
+    },
+    {
+      "class_id": 12,
+      "label": "colt's foot",
+      "f1_score": 1.0,
+      "support": 10.0
+    },
+    {
+      "class_id": 13,
+      "label": "king protea",
+      "f1_score": 0.9,
+      "support": 10.0
+    },
+    {
+      "class_id": 14,
+      "label": "spear thistle",
+      "f1_score": 1.0,
+      "support": 10.0
+    },
+    {
+      "class_id": 15,
+      "label": "yellow iris",
+      "f1_score": 0.833,
+      "support": 10.0
+    },
+    {
+      "class_id": 16,
+      "label": "globe-flower",
+      "f1_score": 0.909,
+      "support": 10.0
+    },
+    {
+      "class_id": 17,
+      "label": "purple coneflower",
+      "f1_score": 0.947,
+      "support": 10.0
+    },
+    {
+      "class_id": 18,
+      "label": "peruvian lily",
+      "f1_score": 0.75,
+      "support": 10.0
+    }
+  ],
+  "message": "Real model evaluation complete: Top-1 Accuracy 84.6%, Top-5 Accuracy 96.0%, Weighted F1 84.5%."
+}

@@ -54,3 +54,4 @@ backend/storage/uploads/*
 *.swo
 .DS_Store
 Thumbs.db
+data/flowers102/

@@ -34,108 +34,108 @@ CONFIDENCE_THRESHOLD = 0.25   # below this → low-confidence warning
 # ── Oxford 102 Flowers – complete class labels (torchvision Flowers102 order) ──
 # torchvision uses 0-indexed labels 0-101 corresponding to Oxford class IDs 1-102
 OXFORD_FLOWER_LABELS = [
-    "pink primrose",              # 0  (Oxford class 1)
-    "hard-leaved pocket orchid",  # 1
-    "canterbury bells",           # 2
-    "sweet pea",                  # 3
-    "english marigold",           # 4
-    "tiger lily",                 # 5
-    "moon orchid",                # 6
-    "bird of paradise",           # 7
-    "monkshood",                  # 8
-    "globe thistle",              # 9
-    "snapdragon",                 # 10
-    "colt's foot",                # 11
-    "king protea",                # 12
-    "spear thistle",              # 13
-    "yellow iris",                # 14
-    "globe-flower",               # 15
-    "purple coneflower",          # 16
-    "peruvian lily",              # 17
-    "balloon flower",             # 18
-    "giant white arum lily",      # 19
-    "fire lily",                  # 20
-    "pincushion flower",          # 21
-    "fritillary",                 # 22
-    "red ginger",                 # 23
-    "grape hyacinth",             # 24
-    "corn poppy",                 # 25
-    "prince of wales feathers",   # 26
-    "stemless gentian",           # 27
-    "artichoke",                  # 28
-    "sweet william",              # 29
-    "sunflower",                  # 30
-    "pelargonium",                # 31
-    "garden phlox",               # 32
-    "love in the mist",           # 33
-    "mexican aster",              # 34
-    "alpine sea holly",           # 35
-    "ruby-lipped cattleya",       # 36
-    "cape flower",                # 37
-    "great masterwort",           # 38
-    "siam tulip",                 # 39
-    "lenten rose",                # 40
-    "barbeton daisy",             # 41
-    "daffodil",                   # 42
-    "sword lily",                 # 43
-    "poinsettia",                 # 44
-    "bolero deep blue",           # 45
-    "wallflower",                 # 46
-    "marigold",                   # 47
-    "buttercup",                  # 48
-    "oxeye daisy",                # 49
-    "common dandelion",           # 50
-    "petunia",                    # 51
-    "wild pansy",                 # 52
-    "primula",                    # 53
-    "sunflower",                  # 54
-    "pelargonium",                # 55  (note: duplicates in Oxford dataset)
-    "bishop of llandaff",         # 56
-    "gaura",                      # 57
-    "geranium",                   # 58
-    "orange dahlia",              # 59
-    "pink-yellow dahlia",         # 60
-    "cautleya spicata",           # 61
-    "japanese anemone",           # 62
-    "black-eyed susan",           # 63
-    "silverbush",                 # 64
-    "californian poppy",          # 65
-    "osteospermum",               # 66
-    "spring crocus",              # 67
-    "bearded iris",               # 68
-    "windflower",                 # 69
-    "tree poppy",                 # 70
-    "gazania",                    # 71
-    "azalea",                     # 72
-    "water lily",                 # 73
-    "rose",                       # 74
-    "thorn apple",                # 75
-    "morning glory",              # 76
-    "passion flower",             # 77
-    "lotus",                      # 78
-    "toad lily",                  # 79
-    "anthurium",                  # 80
-    "frangipani",                 # 81
-    "clematis",                   # 82
-    "hibiscus",                   # 83
-    "columbine",                  # 84
-    "desert-rose",                # 85
-    "tree mallow",                # 86
-    "magnolia",                   # 87
-    "cyclamen",                   # 88
-    "watercress",                 # 89
-    "canna lily",                 # 90
-    "hippeastrum",                # 91
-    "bee balm",                   # 92
-    "ball moss",                  # 93
-    "foxglove",                   # 94
-    "bougainvillea",              # 95
-    "camellia",                   # 96
-    "mallow",                     # 97
-    "mexican petunia",            # 98
-    "bromelia",                   # 99
-    "blanket flower",             # 100
-    "trumpet creeper",            # 101  (Oxford class 102)
+    "pink primrose",
+    "hard-leaved pocket orchid",
+    "canterbury bells",
+    "sweet pea",
+    "english marigold",
+    "tiger lily",
+    "moon orchid",
+    "bird of paradise",
+    "monkshood",
+    "globe thistle",
+    "snapdragon",
+    "colt's foot",
+    "king protea",
+    "spear thistle",
+    "yellow iris",
+    "globe-flower",
+    "purple coneflower",
+    "peruvian lily",
+    "balloon flower",
+    "giant white arum lily",
+    "fire lily",
+    "pincushion flower",
+    "fritillary",
+    "red ginger",
+    "grape hyacinth",
+    "corn poppy",
+    "prince of wales feathers",
+    "stemless gentian",
+    "artichoke",
+    "sweet william",
+    "carnation",
+    "garden phlox",
+    "love in the mist",
+    "mexican aster",
+    "alpine sea holly",
+    "ruby-lipped cattleya",
+    "cape flower",
+    "great masterwort",
+    "siam tulip",
+    "lenten rose",
+    "barbeton daisy",
+    "daffodil",
+    "sword lily",
+    "poinsettia",
+    "bolero deep blue",
+    "wallflower",
+    "marigold",
+    "buttercup",
+    "oxeye daisy",
+    "common dandelion",
+    "petunia",
+    "wild pansy",
+    "primula",
+    "sunflower",
+    "pelargonium",
+    "bishop of llandaff",
+    "gaura",
+    "geranium",
+    "orange dahlia",
+    "pink-yellow dahlia?",
+    "cautleya spicata",
+    "japanese anemone",
+    "black-eyed susan",
+    "silverbush",
+    "californian poppy",
+    "osteospermum",
+    "spring crocus",
+    "bearded iris",
+    "windflower",
+    "tree poppy",
+    "gazania",
+    "azalea",
+    "water lily",
+    "rose",
+    "thorn apple",
+    "morning glory",
+    "passion flower",
+    "lotus",
+    "toad lily",
+    "anthurium",
+    "frangipani",
+    "clematis",
+    "hibiscus",
+    "columbine",
+    "desert-rose",
+    "tree mallow",
+    "magnolia",
+    "cyclamen",
+    "watercress",
+    "canna lily",
+    "hippeastrum",
+    "bee balm",
+    "ball moss",
+    "foxglove",
+    "bougainvillea",
+    "camellia",
+    "mallow",
+    "mexican petunia",
+    "bromelia",
+    "blanket flower",
+    "trumpet creeper",
+    "blackberry lily",
 ]
 
 # ── Display names (title-cased) ─────────────────────────────────────────────────

@@ -85,7 +85,7 @@ def evaluate(model_path: str, data_root: str) -> dict:
     test_ds = datasets.Flowers102(
         root=flowers_dir, split="test", transform=VAL_TRANSFORM, download=True
     )
-    test_loader = DataLoader(test_ds, batch_size=64, shuffle=False, num_workers=4)
+    test_loader = DataLoader(test_ds, batch_size=64, shuffle=False, num_workers=0)
     logger.info("Test samples: %d", len(test_ds))
 
     # ── Collect predictions ─────────────────────────────────────────────────────

@@ -7,10 +7,9 @@ from ml_model.config import MODEL_PATH, NUM_CLASSES, DROPOUT_RATE
 
 
 # Build the same MobileNetV2 architecture used during training
-model = models.mobilenet_v2(
-    weights=None
-    #models.MobileNet_V2_Weights.IMAGENET1K_V1
-)
+# The trained checkpoint already contains the complete weights,
+# so pretrained ImageNet weights are not needed here.
+model = models.mobilenet_v2(weights=None)
 
 in_features = model.classifier[1].in_features
 
@@ -19,7 +18,7 @@ model.classifier = nn.Sequential(
     nn.Linear(in_features, NUM_CLASSES),
 )
 
-# Load trained weights
+# Load the trained model
 checkpoint = torch.load(
     MODEL_PATH,
     map_location="cpu"
@@ -29,13 +28,12 @@ if isinstance(checkpoint, dict) and "model_state_dict" in checkpoint:
     checkpoint = checkpoint["model_state_dict"]
 
 model.load_state_dict(checkpoint)
-
 model.eval()
 
-# Dummy input: MobileNetV2 expects 224x224 RGB images
+# Dummy input: MobileNetV2 expects (batch, channels, height, width)
 dummy_input = torch.randn(1, 3, 224, 224)
 
-# Output ONNX file
+# Output path
 output_path = os.path.join(
     os.path.dirname(MODEL_PATH),
     "flower_model.onnx"
