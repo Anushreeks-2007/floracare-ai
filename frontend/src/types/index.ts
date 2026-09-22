@@ -106,17 +106,14 @@ export interface PredictionResult {
 
 export interface StressDetectionResult {
   stress_detected: boolean;
-  overall_confidence: string;
-  issues: string[];
-  recommended_actions: string[];
-  details: {
-    yellowing: { detected: boolean; ratio: number; score: number };
-    brown_spots: { detected: boolean; ratio: number; score: number };
-    wilting: { detected: boolean; dark_ratio: number; score: number };
-  };
-  disclaimer: string;
+  possible_issues: Array<{
+    label: string;
+    description: string;
+    recommended_action: string;
+  }>;
+  overall_stress_level: 'low' | 'moderate' | 'high' | string;
+  analysis_note: string;
 }
-
 export interface HealthScoreResult {
   score: number;
   grade: string;
