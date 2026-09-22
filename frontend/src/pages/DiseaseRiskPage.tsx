@@ -43,6 +43,7 @@ export const DiseaseRiskPage: React.FC<DiseaseRiskPageProps> = ({
             Species-specific vulnerabilities, organic treatments, and preventive measures.
           </p>
         </div>
+  
 
         <div className="w-full sm:w-auto">
           <label className="text-xs font-bold text-slate-600 block mb-1">Select Species:</label>
@@ -79,31 +80,53 @@ export const DiseaseRiskPage: React.FC<DiseaseRiskPageProps> = ({
                 Computer-Vision Stress Diagnosis from Uploaded Image
               </h3>
               <p className="text-xs text-slate-600">
-                Confidence: {stressResult.overall_confidence} • Automated pixel-level color distribution
+                Stress Level: {stressResult.overall_stress_level} • Automated pixel-level color distribution
               </p>
             </div>
           </div>
 
-          {stressResult.issues.length > 0 ? (
+          {stressResult.possible_issues?.length > 0 ? (
             <div className="p-4 bg-white/80 rounded-2xl border border-amber-200/80 space-y-2 text-xs text-slate-700">
               <span className="font-bold text-slate-900">Observed Stress Markers:</span>
-              <ul className="list-disc list-inside space-y-1">
-                {stressResult.issues.map((iss, i) => (
-                  <li key={i}>{iss}</li>
+
+              <ul className="list-disc list-inside space-y-2">
+                {stressResult.possible_issues.map((iss, i) => (
+                  <li key={i}>
+                    {typeof iss === 'string' ? (
+                      iss
+                    ) : (
+                      <div className="inline-block">
+                        <p className="font-semibold text-slate-900">
+                          {iss.label}
+                        </p>
+
+                        <p className="text-slate-600 mt-1">
+                          {iss.description}
+                        </p>
+
+                        {iss.recommended_action && (
+                          <p className="text-emerald-800 font-semibold mt-1">
+                            Action: {iss.recommended_action}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </li>
                 ))}
               </ul>
-              <div className="pt-2 border-t border-slate-100 font-semibold text-emerald-800">
-                Action: {stressResult.recommended_actions.join(' ')}
+
+              <div className="pt-2 border-t border-slate-100 font-semibold text-amber-800">
+                Stress Level: {stressResult.overall_stress_level}
               </div>
             </div>
           ) : (
             <p className="text-xs text-emerald-800 font-medium">
-              No signs of chlorosis (yellowing), necrosis (brown spots), or severe wilting detected on the uploaded specimen.
+              No significant visual stress markers were detected on the uploaded specimen.
             </p>
           )}
 
           <p className="text-[11px] text-slate-500 italic">
-            {stressResult.disclaimer}
+            {stressResult.analysis_note}
           </p>
         </div>
       )}

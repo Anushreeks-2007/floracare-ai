@@ -12,7 +12,7 @@ from backend.routes.flowers import router as flowers_router
 from backend.routes.analytics import router as analytics_router
 from backend.routes.journal import router as journal_router
 from backend.utils.data_loader import get_flower_db
-
+from backend.routes.predict import router as predict_router
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
@@ -45,6 +45,7 @@ app.include_router(care_router)
 app.include_router(flowers_router)
 app.include_router(analytics_router)
 app.include_router(journal_router)
+app.include_router(predict_router)
 
 @app.on_event("startup")
 async def startup_event():

@@ -12,7 +12,7 @@ from ml_model.preprocessor import validate_image_format, is_plant_image, load_im
 #from ml_model.model import get_model_info, ModelNotAvailableError
 from ml_model.config import EVALUATION_REPORT_PATH
 from backend.utils.validators import validate_image_upload
-from backend.utils.data_loader import get_flower_by_id
+from backend.utils.data_loader import get_flower_by_id, get_flower_by_label
 from backend.services.scoring import compute_health_score, compute_sustainability_score
 
 logger = logging.getLogger(__name__)
@@ -96,6 +96,7 @@ async def predict_flower(file: UploadFile = File(...)):
     # Run species classification
     try:
         pred_res = predict(image_bytes, filename=file.filename or "flower.jpg")
+        print("DEBUG PREDICTION:",pred_res)
     except Exception as e:
         logger.exception("Prediction failure")
         raise HTTPException(
@@ -107,9 +108,12 @@ async def predict_flower(file: UploadFile = File(...)):
     stress_res = detect_stress(pil_img)
 
     # Lookup flower profile
-    flower_id = pred_res.get("flower_id")
-    flower_data = get_flower_by_id(flower_id) if flower_id else None
-
+    model_pred = pred_res.get("prediction", pred_res)
+    flower_id = model_pred.get("flower_id")
+    flower_label = model_pred.get("label", "")
+    flower_data = get_flower_by_label(flower_label)
+    if flower_data is None and flower_id is not None:
+        flower_data = get_flower_by_id(flower_id + 1)
     # Compute baseline health and sustainability score
     default_env = {
         "temperature": 22.0,

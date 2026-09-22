@@ -60,7 +60,10 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
     setErrorDetails(null);
 
     try {
+      console.log("1. ANALYZE CLICKED");
       const res = await api.predictImage(file);
+      console.log("2. PREDICTION RESPONSE:", res);
+      
       if (!res.is_plant) {
         setErrorMsg(res.message);
         setErrorDetails(res.details);
@@ -207,14 +210,14 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
       )}
 
       {/* Prediction Results Display */}
-      {prediction && profile && (
+      {prediction && (
         <div className="space-y-8 animate-in fade-in duration-500">
           {/* Main Identification Card */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-100 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6 border-b border-slate-100">
               <div className="flex items-center gap-4">
                 <span className="text-5xl p-2 bg-emerald-50 rounded-2xl border border-emerald-100">
-                  {profile.emoji}
+                  {profile?.emoji || '🌸'}
                 </span>
                 <div>
                   <div className="flex items-center gap-2">
@@ -226,7 +229,7 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
                     </span>
                   </div>
                   <p className="text-sm italic text-slate-500 font-serif mt-0.5">
-                    {profile.scientific_name} • Class #{prediction.flower_id}
+                    {profile?.scientific_name || prediction.flower_name || 'Unknown Flower'} • Class #{prediction.flower_id}
                   </p>
                 </div>
               </div>
@@ -251,8 +254,8 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
                 Top 3 Species Predictions
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {prediction.top_predictions.map((c) => (
-                  <div key={c.rank} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                {prediction.top_predictions.map((c,i) => (
+                  <div key={`${c.name}-${i}`} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
                     <div className="flex items-center justify-between text-xs">
                       <span className="font-semibold text-slate-800 flex items-center gap-1.5">
                         <span>{c.emoji}</span>
@@ -325,23 +328,33 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
                 </span>
               </div>
 
-              {stress.issues.length > 0 && (
-                <div className="space-y-1">
-                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                    Detected Visual Indicators:
-                  </p>
-                  <ul className="list-disc list-inside text-xs sm:text-sm space-y-1 text-slate-700">
-                    {stress.issues.map((iss, i) => (
-                      <li key={i}>{iss}</li>
+              {stress.possible_issues?.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-semibold text-red-700">Possible Issues</h4>
+                  <ul className="mt-2 space-y-2 list-disc list-inside">
+                    {stress.possible_issues?.map((iss, i) => (
+                      <li key={i}>
+                        {typeof iss === 'string' ? iss : (
+                          <div>
+                            <p className="font-medium">{iss.label}</p>
+                            <p className="text-sm">{iss.description}</p>
+                            {iss.recommended_action && (
+                              <p className="text-sm mt-1">
+                                <strong>Action:</strong> {iss.recommended_action}
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
 
-              {stress.recommended_actions.length > 0 && (
+              {stress.recommended_actions?.length > 0 && (
                 <div className="p-3 bg-white rounded-xl border border-slate-200/80 text-xs text-slate-700 space-y-1">
                   <span className="font-bold text-slate-900">Recommended Action:</span>
-                  <p>{stress.recommended_actions.join(' ')}</p>
+                  <p>{stress.recommended_actions?.join(' ')}</p>
                 </div>
               )}
 
