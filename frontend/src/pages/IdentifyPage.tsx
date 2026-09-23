@@ -316,7 +316,7 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
                       {stress.stress_detected ? 'Possible Stress Detected' : 'No Immediate Stress Detected'}
                     </h3>
                     <p className="text-xs text-slate-600">
-                      Confidence: {stress.overall_confidence} • Automated CV Analysis
+                      Confidence: {stress.overall_stress_level} • Automated CV Analysis
                     </p>
                   </div>
                 </div>
@@ -351,16 +351,26 @@ export const IdentifyPage: React.FC<IdentifyPageProps> = ({ onFlowerIdentified, 
                 </div>
               )}
 
-              {stress.recommended_actions?.length > 0 && (
-                <div className="p-3 bg-white rounded-xl border border-slate-200/80 text-xs text-slate-700 space-y-1">
-                  <span className="font-bold text-slate-900">Recommended Action:</span>
-                  <p>{stress.recommended_actions?.join(' ')}</p>
-                </div>
-              )}
+              {stress.possible_issues?.map((iss, i) => (
+            <div
+              key={i}
+              className="p-3 bg-white rounded-xl border border-slate-200"
+            >
+              <span className="font-bold text-slate-900">
+                {iss.label}
+              </span>
 
-              <p className="text-[11px] text-slate-500 italic">
-                {stress.disclaimer}
+              <p className="text-sm text-slate-600">
+                {iss.description}
               </p>
+
+              {iss.recommended_action && (
+                <p className="text-sm mt-1">
+                  <strong>Action:</strong> {iss.recommended_action}
+                </p>
+              )}
+            </div>
+          ))}
             </div>
           )}
 
