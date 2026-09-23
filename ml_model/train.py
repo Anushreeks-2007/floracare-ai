@@ -168,10 +168,10 @@ def train(args: argparse.Namespace) -> None:
     model = freeze_base(model)   # Phase 1: train classifier only
     model.to(device)
 
-    optimizer = optim.Adam(
+    optimizer = optim.Adamw(
         filter(lambda p: p.requires_grad, model.parameters()),
         lr=args.lr,
-        weight_decay=1e-4,
+        weight_decay=5e-4,
     )
     scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs)
 
@@ -191,10 +191,10 @@ def train(args: argparse.Namespace) -> None:
             logger.info("=" * 60)
             model = unfreeze_top_layers(model, num_blocks=4)
             # Lower learning rate for fine-tuning
-            optimizer = optim.Adam(
+            optimizer = optim.Adamw(
                 filter(lambda p: p.requires_grad, model.parameters()),
                 lr=FINETUNE_LR,
-                weight_decay=1e-4,
+                weight_decay=5e-4,
             )
             scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=args.epochs - PHASE1_EPOCHS)
 

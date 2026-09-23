@@ -18,14 +18,14 @@ IMAGENET_STD  = [0.229, 0.224, 0.225]
 
 # ── Model ──────────────────────────────────────────────────────────────────────
 NUM_CLASSES = 102
-DROPOUT_RATE = 0.2
+DROPOUT_RATE = 0.4
 
 # ── Training ───────────────────────────────────────────────────────────────────
 BATCH_SIZE     = 32
-LEARNING_RATE  = 1e-3
-FINETUNE_LR    = 1e-4   # lower LR for phase-2 fine-tuning
-NUM_EPOCHS     = 30
-PHASE1_EPOCHS  = 10     # classifier-only training
+LEARNING_RATE  = 3e-4
+FINETUNE_LR    = 1e-5   # lower LR for phase-2 fine-tuning
+NUM_EPOCHS     = 25
+PHASE1_EPOCHS  = 5     # classifier-only training
 PATIENCE       = 5      # early-stopping patience
 
 # ── Prediction ─────────────────────────────────────────────────────────────────
