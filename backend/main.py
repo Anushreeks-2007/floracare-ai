@@ -1,4 +1,5 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
 import os
 import logging
 from fastapi import FastAPI, Request
@@ -6,13 +7,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 
-#from backend.routes.predict import router as predict_router
+from backend.database import init_db
+from backend.routes.auth import router as auth_router
+from backend.routes.history import router as history_router
+from backend.routes.predict import router as predict_router
 from backend.routes.care import router as care_router
 from backend.routes.flowers import router as flowers_router
 from backend.routes.analytics import router as analytics_router
 from backend.routes.journal import router as journal_router
 from backend.utils.data_loader import get_flower_db
-from backend.routes.predict import router as predict_router
+
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
@@ -25,7 +29,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Enable CORS for frontend Vite development server and production
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -34,13 +37,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Ensure upload directory exists and mount static files
 uploads_dir = os.path.join(os.path.dirname(__file__), "storage", "uploads")
 os.makedirs(uploads_dir, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=uploads_dir), name="uploads")
 
-# Include Routers
-#app.include_router(predict_router)
+app.include_router(auth_router)
+app.include_router(history_router)
 app.include_router(care_router)
 app.include_router(flowers_router)
 app.include_router(analytics_router)
@@ -49,6 +51,7 @@ app.include_router(predict_router)
 
 @app.on_event("startup")
 async def startup_event():
+    init_db()
     try:
         db = get_flower_db()
         logger.info("🌿 FloraCare AI API initialized. %d flower species loaded.", len(db))
@@ -63,6 +66,12 @@ async def root():
         "version": "1.0.0",
         "docs_url": "/docs",
         "endpoints": [
+            "/auth/register",
+            "/auth/login",
+            "/auth/me",
+            "/api/history/photos",
+            "/api/history/predictions",
+            "/api/history/feedback",
             "/api/predict",
             "/api/care/health-score",
             "/api/care/compatibility",
