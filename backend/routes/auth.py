@@ -1,42 +1,110 @@
+from __future__ import annotations
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.auth import create_access_token, get_current_user, hash_password, verify_password
+from backend.deps import get_current_user
 from backend.database import get_db
-from backend.models import User
-from backend.schemas import Token, UserCreate, UserLogin, UserOut
+from backend.models import PhotoUpload, PredictionLog, UserFeedback, User
+from backend.schemas import FeedbackCreate
 
-router = APIRouter(prefix="/api/auth", tags=["Authentication"])
+router = APIRouter(prefix="/api", tags=["User History"])
 
 
-@router.post("/register", response_model=UserOut)
-async def register_user(payload: UserCreate, db: Session = Depends(get_db)):
-    if db.query(User).filter((User.email == payload.email) | (User.username == payload.username)).first():
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Username or email already exists")
-
-    user = User(
-        username=payload.username,
-        email=payload.email,
-        password_hash=hash_password(payload.password),
-        first_name=payload.first_name,
-        last_name=payload.last_name,
+@router.get("/history/photos")
+async def get_user_photo_history(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    photos = (
+        db.query(PhotoUpload)
+        .filter(PhotoUpload.user_id == user.id)
+        .order_by(PhotoUpload.created_at.desc())
+        .all()
     )
-    db.add(user)
+    return [
+        {
+            "id": photo.id,
+            "filename": photo.filename,
+            "original_name": photo.original_name,
+            "file_url": photo.file_url,
+            "prediction_label": photo.prediction_label,
+            "confidence": photo.confidence,
+            "status": photo.status,
+            "created_at": photo.created_at.isoformat(),
+        }
+        for photo in photos
+    ]
+
+
+@router.get("/history/predictions")
+async def get_user_prediction_history(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    logs = (
+        db.query(PredictionLog)
+        .filter(PredictionLog.user_id == user.id)
+        .order_by(PredictionLog.created_at.desc())
+        .all()
+    )
+    return [
+        {
+            "id": log.id,
+            "predicted_label": log.predicted_label,
+            "confidence": log.confidence,
+            "actual_label": log.actual_label,
+            "model_version": log.model_version,
+            "result_json": log.result_json,
+            "created_at": log.created_at.isoformat(),
+        }
+        for log in logs
+    ]
+
+
+@router.get("/history/feedback")
+async def get_user_feedback_history(
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    entries = (
+        db.query(UserFeedback)
+        .filter(UserFeedback.user_id == user.id)
+        .order_by(UserFeedback.created_at.desc())
+        .all()
+    )
+    return [
+        {
+            "id": entry.id,
+            "photo_id": entry.photo_id,
+            "predicted_label": entry.predicted_label,
+            "corrected_label": entry.corrected_label,
+            "notes": entry.notes,
+            "created_at": entry.created_at.isoformat(),
+        }
+        for entry in entries
+    ]
+
+
+@router.post("/history/feedback")
+async def create_user_feedback(
+    payload: FeedbackCreate,
+    db: Session = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    feedback = UserFeedback(
+        user_id=user.id,
+        photo_id=payload.photo_id,
+        predicted_label=payload.predicted_label,
+        corrected_label=payload.corrected_label,
+        notes=payload.notes,
+    )
+    db.add(feedback)
     db.commit()
-    db.refresh(user)
-    return user
+    db.refresh(feedback)
 
-
-@router.post("/login", response_model=Token)
-async def login_user(payload: UserLogin, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == payload.email).first()
-    if not user or not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")
-
-    access_token = create_access_token({"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-@router.get("/me", response_model=UserOut)
-async def get_me(current_user: User = Depends(get_current_user)):
-    return current_user
+    return {
+        "success": True,
+        "message": "Feedback saved for model improvement.",
+        "feedback_id": feedback.id,
+    }

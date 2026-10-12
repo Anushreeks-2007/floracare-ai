@@ -1,14 +1,14 @@
-from typing import Optional
+from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
+from datetime import datetime
 
 
 class UserCreate(BaseModel):
-    username: str = Field(..., min_length=3, max_length=80)
+    username: str = Field(..., min_length=3, max_length=100)
     email: EmailStr
     password: str = Field(..., min_length=6)
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
 
 
 class UserLogin(BaseModel):
@@ -17,14 +17,12 @@ class UserLogin(BaseModel):
 
 
 class UserOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
     id: int
     username: str
     email: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
-    is_active: bool = True
+
+    class Config:
+        from_attributes = True
 
 
 class Token(BaseModel):
@@ -32,44 +30,34 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 
-class PhotoUploadCreate(BaseModel):
-    file_name: str
-    file_path: str
-    file_url: Optional[str] = None
-    predicted_species: Optional[str] = None
-    predicted_confidence: Optional[float] = None
-    actual_species: Optional[str] = None
-    status: str = "uploaded"
-    notes: Optional[str] = None
-
-
-class PredictionFeedbackCreate(BaseModel):
+class FeedbackCreate(BaseModel):
     photo_id: Optional[int] = None
-    predicted_species: str
-    actual_species: str
-    confidence: Optional[float] = None
+    predicted_label: Optional[str] = None
+    corrected_label: str = Field(..., min_length=1)
     notes: Optional[str] = None
-
-
-class TrainingExampleCreate(BaseModel):
-    photo_path: str
-    predicted_species: str
-    actual_species: str
-    confidence: Optional[float] = None
-    metadata: Optional[str] = None
 
 
 class PhotoUploadOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
     id: int
-    user_id: int
-    file_name: str
-    file_path: str
-    file_url: Optional[str] = None
-    predicted_species: Optional[str] = None
-    predicted_confidence: Optional[float] = None
-    actual_species: Optional[str] = None
+    filename: str
+    original_name: str
+    file_url: Optional[str]
+    prediction_label: Optional[str]
+    confidence: Optional[float]
     status: str
-    notes: Optional[str] = None
-    created_at: str
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class PredictionLogOut(BaseModel):
+    id: int
+    predicted_label: str
+    confidence: Optional[float]
+    actual_label: Optional[str]
+    model_version: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
